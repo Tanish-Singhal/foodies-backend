@@ -4,7 +4,6 @@ const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const port = 5000;
 
 app.use(cors());
 
@@ -14,7 +13,6 @@ const userAgentHeader = {
   }
 };
 
-// Route to fetch restaurant data
 app.get('/api/restaurants', async (req, res) => {
   const url = `${process.env.SWIGGY_RESTAURANTS_PATH}`;
   
@@ -54,7 +52,4 @@ app.get('/api/restaurant-images/:imageId', (req, res) => {
   res.redirect(imageUrl);
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+module.exports = app;
