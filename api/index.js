@@ -50,16 +50,13 @@ app.get('/api/restaurant-images/:imageId', (req, res) => {
   
   console.log(`Serving image from: ${imageUrl}`);
   
-  // Instead of redirecting, we'll proxy the request
   axios({
     method: 'get',
     url: imageUrl,
     responseType: 'stream'
   })
     .then(response => {
-      // Forward the content-type header
       res.set('Content-Type', response.headers['content-type']);
-      // Pipe the image data to the response
       response.data.pipe(res);
     })
     .catch(error => {
