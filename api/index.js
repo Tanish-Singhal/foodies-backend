@@ -44,25 +44,22 @@ app.get('/api/restaurant-menu/:id', async (req, res) => {
   }
 });
 
-app.get('/api/restaurant-images/:imageId', (req, res) => {
+app.get('/api/restaurant-images/:imageId', async (req, res) => {
   const { imageId } = req.params;
   const imageUrl = `${process.env.SWIGGY_IMAGE_BASE_URL}${imageId}`;
   
-  console.log(`Serving image from: ${imageUrl}`);
-  
-  axios({
-    method: 'get',
-    url: imageUrl,
-    responseType: 'stream'
-  })
-    .then(response => {
-      res.set('Content-Type', response.headers['content-type']);
-      response.data.pipe(res);
-    })
-    .catch(error => {
-      console.error('Error fetching image:', error);
-      res.status(500).send('Error fetching image');
+  try {
+    const response = await axios.get(imageUrl, {
+      responseType: 'arraybuffer'
     });
+    
+    const contentType = response.headers['content-type'];
+    res.set('Content-Type', contentType);
+    res.send(response.data);
+  } catch (error) {
+    console.error('Error fetching image:', error.message);
+    res.status(500).send('Error fetching image');
+  }
 });
 
 module.exports = app;
