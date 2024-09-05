@@ -8,12 +8,18 @@ const port = 5000;
 
 app.use(cors());
 
+const userAgentHeader = {
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+  }
+};
+
 // Route to fetch restaurant data
 app.get('/api/restaurants', async (req, res) => {
   const url = `${process.env.SWIGGY_RESTAURANTS_PATH}`;
   
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, userAgentHeader);
     res.json(response.data);
   } catch (error) {
     console.error('Error fetching restaurant data:', error.message);
@@ -26,11 +32,10 @@ app.get('/api/restaurants', async (req, res) => {
 
 app.get('/api/restaurant-menu/:id', async (req, res) => {
   const { id } = req.params;
-  
   const url = `${process.env.SWIGGY_MENU_PATH}${id}`;
   
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, userAgentHeader);
     res.json(response.data);
   } catch (error) {
     console.error(`Error fetching menu for restaurant:`, error.message);
