@@ -49,7 +49,23 @@ app.get('/api/restaurant-images/:imageId', (req, res) => {
   const imageUrl = `${process.env.SWIGGY_IMAGE_BASE_URL}${imageId}`;
   
   console.log(`Serving image from: ${imageUrl}`);
-  res.redirect(imageUrl);
+  
+  // Instead of redirecting, we'll proxy the request
+  axios({
+    method: 'get',
+    url: imageUrl,
+    responseType: 'stream'
+  })
+    .then(response => {
+      // Forward the content-type header
+      res.set('Content-Type', response.headers['content-type']);
+      // Pipe the image data to the response
+      response.data.pipe(res);
+    })
+    .catch(error => {
+      console.error('Error fetching image:', error);
+      res.status(500).send('Error fetching image');
+    });
 });
 
 module.exports = app;
