@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+require('dotenv').config();
 
 const app = express();
 const port = 5000;
@@ -9,7 +10,7 @@ app.use(cors());
 
 // Route to fetch restaurant data
 app.get('/api/restaurants', async (req, res) => {
-  const url = 'https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.7040592&lng=77.10249019999999&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING';
+  const url = `${process.env.SWIGGY_RESTAURANTS_PATH}`;
   
   try {
     const response = await axios.get(url);
@@ -26,7 +27,7 @@ app.get('/api/restaurants', async (req, res) => {
 app.get('/api/restaurant-menu/:id', async (req, res) => {
   const { id } = req.params;
   
-  const url = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=28.7040592&lng=77.10249019999999&restaurantId=${id}`;
+  const url = `${process.env.SWIGGY_MENU_PATH}${id}`;
   
   try {
     const response = await axios.get(url);
@@ -41,15 +42,12 @@ app.get('/api/restaurant-menu/:id', async (req, res) => {
 });
 
 app.get('/api/restaurant-images/:imageId', (req, res) => {
-  const url = "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/";
   const { imageId } = req.params;
-
-  const imageUrl = `${url}${imageId}`;
+  const imageUrl = `${process.env.SWIGGY_IMAGE_BASE_URL}${imageId}`;
+  
   console.log(`Serving image from: ${imageUrl}`);
-
   res.redirect(imageUrl);
 });
-
 
 // Start the server
 app.listen(port, () => {
