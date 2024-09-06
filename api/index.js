@@ -5,7 +5,12 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://foodies-zeta-one.vercel.app/',
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 const userAgentHeader = {
   headers: {
@@ -44,8 +49,8 @@ app.get('/api/restaurant-menu/:id', async (req, res) => {
   }
 });
 
-app.get('/api/restaurant-images/:imageId', async (req, res) => {
-  const { imageId } = req.params;
+app.get('/api/restaurant-images/*', async (req, res) => {
+  const imageId = req.params[0];
   const imageUrl = `${process.env.SWIGGY_IMAGE_BASE_URL}${imageId}`;
   
   try {
@@ -53,8 +58,11 @@ app.get('/api/restaurant-images/:imageId', async (req, res) => {
       responseType: 'arraybuffer'
     });
     
+    res.set('Access-Control-Allow-Origin', '*');
+    
     const contentType = response.headers['content-type'];
     res.set('Content-Type', contentType);
+    
     res.send(response.data);
   } catch (error) {
     console.error('Error fetching image:', error.message);
