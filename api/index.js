@@ -2,11 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
 const corsOptions = {
-  origin: 'https://foodies-zeta-one.vercel.app/',
+  origin: 'http://localhost:4173',
   optionsSuccessStatus: 200
 };
 
@@ -70,4 +71,4 @@ app.get('/api/restaurant-images/*', async (req, res) => {
   }
 });
 
-module.exports = app;
+app.listen(PORT);
