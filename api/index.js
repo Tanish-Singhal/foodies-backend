@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:4173',
+  origin: 'https://foodies-zeta-one.vercel.app',
   optionsSuccessStatus: 200
 };
 
